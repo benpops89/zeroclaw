@@ -1071,8 +1071,27 @@ mod tests {
     fn supported_message_type_detection() {
         assert!(MatrixChannel::is_supported_message_type("m.text"));
         assert!(MatrixChannel::is_supported_message_type("m.notice"));
+        assert!(MatrixChannel::is_supported_message_type("m.audio"));
         assert!(!MatrixChannel::is_supported_message_type("m.image"));
         assert!(!MatrixChannel::is_supported_message_type("m.file"));
+    }
+
+    #[test]
+    fn with_transcription_configures_enabled_config() {
+        let mut tc = crate::config::TranscriptionConfig::default();
+        tc.enabled = true;
+
+        let ch = make_channel().with_transcription(tc);
+        assert!(ch.transcription.is_some());
+    }
+
+    #[test]
+    fn with_transcription_ignores_disabled_config() {
+        let mut tc = crate::config::TranscriptionConfig::default();
+        tc.enabled = false;
+
+        let ch = make_channel().with_transcription(tc);
+        assert!(ch.transcription.is_none());
     }
 
     #[test]
